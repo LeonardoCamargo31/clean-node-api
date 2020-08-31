@@ -1,7 +1,5 @@
 import { SignUpController } from './signup'
-import { MissingParamError } from '../errors/missing-param-error'
-import { InvalidParamError } from '../errors/invalid-param-error'
-import { ServerError } from '../errors/server-error'
+import { MissingParamError, InvalidParamError, ServerError } from '../errors'
 import { EmailValidator } from '../protocols/email-validator'
 
 interface SutTypes {
@@ -9,8 +7,8 @@ interface SutTypes {
   emailInvalidStub: EmailValidator
 }
 
-const makeSut = (): SutTypes => {
-  // versão mock de um e-mail validator
+const makeEmailValidator = (): EmailValidator => {
+// versão mock de um e-mail validator
   // stub double de teste, uma função e damos um retorno fixo a ela
   class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
@@ -18,7 +16,22 @@ const makeSut = (): SutTypes => {
     }
   }
 
-  const emailInvalidStub = new EmailValidatorStub()
+  return new EmailValidatorStub()
+}
+
+const makeEmailValidatorWithError = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      throw new Error()
+    }
+  }
+
+  return new EmailValidatorStub()
+}
+
+const makeSut = (): SutTypes => {
+  const emailInvalidStub = makeEmailValidator()
+
   // vamos injetar classe a nossa controller
   const sut = new SignUpController(emailInvalidStub)
   return {
@@ -137,12 +150,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 500 if EmailValidator throws', () => {
-    class EmailValidatorStub implements EmailValidator {
-      isValid (email: string): boolean {
-        throw new Error()
-      }
-    }
-    const emailInvalidStub = new EmailValidatorStub()
+    const emailInvalidStub = makeEmailValidatorWithError()
     const sut = new SignUpController(emailInvalidStub)
 
     const httpRequest = {
