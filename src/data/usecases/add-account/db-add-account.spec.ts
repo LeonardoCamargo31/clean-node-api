@@ -1,5 +1,5 @@
 import { DbAddAccount } from './db-add-account'
-import { Encrypter } from '../../protocols/encrypter'
+import { Encrypter } from './db-add-account-protocols'
 
 // para nosso makeSut não ficar com retorno any
 interface SutTypes{
