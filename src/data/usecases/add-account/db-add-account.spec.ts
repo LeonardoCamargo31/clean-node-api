@@ -107,4 +107,21 @@ describe('DbAddAccount Usecase', () => {
     // o reject da promise, espero uma exceção
     await expect(promise).rejects.toThrow()
   })
+
+  // sucesso não criamos o mock
+  test('Should return an account on success', async () => {
+    const { sut } = makeSut()
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
+    }
+    const account = await sut.add(accountData)
+    expect(account).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password'
+    })
+  })
 })
