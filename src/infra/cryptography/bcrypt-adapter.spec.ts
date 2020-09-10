@@ -30,4 +30,15 @@ describe('Bcrypt Adapter', () => {
     // então nesse caso criaremos um mock de bcrypt com retorno fixo
     expect(hash).toBe('hash')
   })
+
+  test('Should throw if bcrypt throws', async () => {
+    const sut = makeSut()
+    jest.spyOn(bcrypt, 'hash').mockReturnValueOnce(new Promise((resolve, reject) => {
+      return reject(new Error())
+    }))
+
+    // não trata a exceção, apenas repassa
+    const promise = sut.encrypt('any_value')
+    await expect(promise).rejects.toThrow()
+  })
 })
