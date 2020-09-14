@@ -21,5 +21,12 @@ export const MongoHelper = {
   // precisamos expor a collection e reutilizar a conexão ativa
   getCollection (name: string): Collection {
     return this.connection.db().collection(name)
+  },
+
+  map: (collection: any): any => {
+    const { _id, ...collectionWithoutId } = collection
+    // objeto sem _id, e depois o adiciono como id
+    return Object.assign({}, collectionWithoutId, { id: _id })
   }
+
 }
