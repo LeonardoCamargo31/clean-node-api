@@ -2,6 +2,9 @@ import { HttpRequest, HttpResponse, Controller, EmailValidator, AddAccount } fro
 import { MissingParamError, InvalidParamError } from '../../errors'
 import { badRequest, serverError, ok } from '../../helpers/http-helpers'
 
+// todas as controllers precisam de log
+// mas não pertence a regra de negócio para isso constructor (email, addAccount, logger)
+// ao invés de ficar injetando em todas as controllers, utilizamos o decorator
 export class SignUpController implements Controller {
   private readonly emailValidator: EmailValidator
   private readonly addAccount: AddAccount
