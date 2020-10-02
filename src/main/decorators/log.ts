@@ -16,6 +16,12 @@ export class LogControllerDecorator implements Controller {
     // vai chamar o handle, que já era chamado antes pela rota
     // mas podemos adicionar um logger aqui dentro
     const httpResponse = await this.controller.handle(httpRequest)
+
+    // caso retorne um server error
+    if (httpResponse.statusCode === 500) {
+      // logger
+
+    }
     return httpResponse
   }
 }
