@@ -1,4 +1,5 @@
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
+import { LogErrorRepository } from '../../data/protocols/log-error-repository'
 
 // Design Pattern Decorator
 // ele pega uma instância de objeto, e cria um wrapper em volta dele
@@ -8,8 +9,11 @@ import { Controller, HttpRequest, HttpResponse } from '../../presentation/protoc
 // vamos utilizar composição, assim implementamos uma interface
 export class LogControllerDecorator implements Controller {
   private readonly controller: Controller
-  constructor (controller: Controller) {
+  private readonly logErrorRepository: LogErrorRepository
+
+  constructor (controller: Controller, logErrorRepository: LogErrorRepository) {
     this.controller = controller
+    this.logErrorRepository = logErrorRepository
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -20,7 +24,7 @@ export class LogControllerDecorator implements Controller {
     // caso retorne um server error
     if (httpResponse.statusCode === 500) {
       // logger
-
+      await this.logErrorRepository.log(httpResponse.body.stack)
     }
     return httpResponse
   }
