@@ -8,6 +8,7 @@ export class RequiredFieldValidation implements Validation {
     this.fieldName = fieldName
   }
 
+  // exemplo input=body:{name, email, etc...} se estiver vazio
   validate (input: any): Error {
     if (!input[this.fieldName]) {
       return new MissingParamError(this.fieldName)
